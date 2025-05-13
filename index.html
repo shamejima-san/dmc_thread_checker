@@ -10,9 +10,25 @@
   <style>
     body {
       font-family: "Noto Sans JP", sans-serif;
+      background: #f0f0f0;
+      color: #333;
+      margin: 0;
+    }
+
+    .visual{
       margin: 0 1rem;
       padding: 1rem;
-      background: #f0f0f0;
+    }
+
+    header{
+      background-color: #333;
+      color: #fff;
+      padding: 1em;
+    }
+
+    h1{
+      font-size: 1em;
+      margin: 0;
     }
 
     .filter-box {
@@ -25,6 +41,29 @@
       font-family: "Noto Sans JP", sans-serif;
       padding: 0.5rem;
       margin-bottom: 0.5rem;
+    }
+
+    input[type="checkbox"] {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      border: 1px solid #000;
+      vertical-align: -5px;
+      -webkit-appearance: none;
+        -moz-appearance: none;
+              appearance: none;
+    }
+
+    input[type="checkbox"]:checked:before {
+      position: absolute;
+      top: 1px;
+      left: 4px;
+      transform: rotate(50deg);
+      width: 4px;
+      height: 8px;
+      border-right: 2px solid #000;
+      border-bottom: 2px solid #000;
+      content: '';
     }
 
     .thread-grid {
@@ -67,603 +106,603 @@
     .color-box {
       height: 20px;
       border-radius: 4px;
-    }
-    
+    }    
   </style>
 </head>
 <body>
-  <div class="filter-box">
-    <input type="text" id="searchInput" placeholder="番号で検索" />
-    <select id="categoryFilter">
-      <option value="">全ての色系統</option>
-      <option value="red">赤系</option>
-      <option value="blue">青系</option>
-      <option value="green">緑系</option>
-      <option value="yellow">黄系</option>
-      <option value="purple">紫系</option>
-      <option value="brown">茶系</option>
-      <option value="mono">無彩色</option>
-    </select>
+  <header><h1>DMC刺繍糸チェッカー</h1></header>
+  <div class="visual">
+    <div class="filter-box">
+      <input type="text" id="searchInput" placeholder="番号で検索" />
+      <select id="categoryFilter">
+        <option value="">全ての色系統</option>
+        <option value="red">赤系</option>
+        <option value="blue">青系</option>
+        <option value="green">緑系</option>
+        <option value="yellow">黄系</option>
+        <option value="purple">紫系</option>
+        <option value="mono">無彩色</option>
+      </select>
+    </div>
+    <label style="display: block; max-width: 400px; margin: 0 auto 1rem; font-size: 1rem;">
+      <input type="checkbox" id="ownedOnly" />
+      持ってる糸だけ表示
+    </label>
+    <div class="thread-grid" id="threadGrid"></div>
+    
+    <script>
+      const threads = [
+        { number: "3713", color: "#FDCCC6" },
+        { number: "761", color: "#FDBBAA" },
+        { number: "760", color: "#FD9B9D" },
+        { number: "3712", color: "#D7595E" },
+        { number: "3328", color: "#CD474B" },
+        { number: "347", color: "#B63A3C" },
+        { number: "353", color: "#FFBCB1" },
+        { number: "352", color: "#FF9396" },
+        { number: "351", color: "#F3626C" },
+        { number: "350", color: "#ED4D50" },
+        { number: "349", color: "#D04448" },
+        { number: "817", color: "#BE3943" },
+        { number: "304", color: "#AB344F" },
+        { number: "3833", color: "#E96177" },
+        { number: "3832", color: "#C9596D" },
+        { number: "3831", color: "#B7455D" },
+        { number: "777", color: "#96354D" },
+        { number: "3801", color: "#DC4142" },
+        { number: "666", color: "#D7353E" },
+        { number: "321", color: "#AC414D" },
+        { number: "498", color: "#843943" },
+        { number: "816", color: "#983B43" },
+        { number: "815", color: "#904850" },
+        { number: "814", color: "#6B333D" },
+        { number: "894", color: "#FFB1C9" },
+        { number: "893", color: "#FF7996" },
+        { number: "892", color: "#F15260" },
+        { number: "891", color: "#DA5564" },
+        { number: "818", color: "#FFE0E7" },
+        { number: "957", color: "#FFA9A7" },
+        { number: "956", color: "#FF8390" },
+        { number: "3708", color: "#FFA4A2" },
+        { number: "3706", color: "#FF6F7A" },
+        { number: "3705", color: "#FF4D5D" },
+        { number: "963", color: "#FFD0E3" },
+        { number: "3716", color: "#FFB1BC" },
+        { number: "962", color: "#FF8CAB" },
+        { number: "961", color: "#EB557E" },
+        { number: "309", color: "#A93E52" },
+        { number: "819", color: "#FBDEDE" },
+        { number: "3326", color: "#F4A6A5" },
+        { number: "899", color: "#E8768E" },
+        { number: "335", color: "#DD5E7B" },
+        { number: "326", color: "#A83C53" },
+        { number: "151", color: "#FEC3D4" },
+        { number: "3354", color: "#F19CAF" },
+        { number: "3733", color: "#D87A84" },
+        { number: "3731", color: "#D37691" },
+        { number: "3350", color: "#B3536A" },
+        { number: "150", color: "#A8405D" },
+        { number: "23", color: "#F8E2E0" },
+        { number: "3689", color: "#FECBD1" },
+        { number: "3688", color: "#C7879C" },
+        { number: "3687", color: "#B45F78" },
+        { number: "3803", color: "#934864" },
+        { number: "3685", color: "#864157" },
+        { number: "605", color: "#FFBDCF" },
+        { number: "604", color: "#EF92A3" },
+        { number: "603", color: "#E278A3" },
+        { number: "602", color: "#DA618F" },
+        { number: "601", color: "#D45281" },
+        { number: "600", color: "#C43D6B" },
+        { number: "3806", color: "#F18CB3" },
+        { number: "3805", color: "#DD6088" },
+        { number: "3804", color: "#C74E74" },
+        { number: "3609", color: "#E5A1C2" },
+        { number: "3608", color: "#EA94B3" },
+        { number: "3607", color: "#CF75B4" },
+        { number: "718", color: "#A04472" },
+        { number: "917", color: "#AD4C8B" },
+        { number: "915", color: "#8D4271" },
+        { number: "33", color: "#7F4D6F" },
+        { number: "34", color: "#6B324E" },
+        { number: "35", color: "#512439" },
+        { number: "778", color: "#D5ACB7" },
+        { number: "3727", color: "#D7A3B7" },
+        { number: "316", color: "#CD8BA8" },
+        { number: "3726", color: "#8E5B6A" },
+        { number: "315", color: "#8B525D" },
+        { number: "3802", color: "#8B4C57" },
+        { number: "902", color: "#683B4F" },
+        { number: "3836", color: "#B386A2" },
+        { number: "3835", color: "#8E6787" },
+        { number: "3834", color: "#7D5173" },
+        { number: "154", color: "#4D364B" },
+        { number: "24", color: "#E5D7DE" },
+        { number: "25", color: "#D9CBDA" },
+        { number: "26", color: "#C9C3D8" },
+        { number: "211", color: "#C8BADD" },
+        { number: "210", color: "#BCA4D2" },
+        { number: "209", color: "#A085B6" },
+        { number: "208", color: "#866AA8" },
+        { number: "3837", color: "#765B98" },
+        { number: "327", color: "#775183" },
+        { number: "153", color: "#DABBDA" },
+        { number: "554", color: "#D0ABDC" },
+        { number: "553", color: "#B78FBD" },
+        { number: "552", color: "#976FB2" },
+        { number: "550", color: "#834B92" },
+        { number: "3743", color: "#BCAAB6" },
+        { number: "3042", color: "#9E91A5" },
+        { number: "3041", color: "#836F89" },
+        { number: "3740", color: "#665362" },
+        { number: "27", color: "#DBD1D2" },
+        { number: "28", color: "#796A77" },
+        { number: "29", color: "#453642" },
+        { number: "3747", color: "#B9C7DB" },
+        { number: "341", color: "#A1B7C9" },
+        { number: "156", color: "#708DB9" },
+        { number: "340", color: "#A388BA" },
+        { number: "155", color: "#9B81C2" },
+        { number: "3746", color: "#8F73B2" },
+        { number: "333", color: "#8562B5" },
+        { number: "30", color: "#7A6F89" },
+        { number: "31", color: "#615773" },
+        { number: "32", color: "#4D455E" },
+        { number: "157", color: "#98BCBF" },
+        { number: "794", color: "#7EA3C6" },
+        { number: "793", color: "#6E8AAE" },
+        { number: "3807", color: "#597AA1" },
+        { number: "792", color: "#455688" },
+        { number: "158", color: "#546589" },
+        { number: "791", color: "#3E4971" },
+        { number: "3840", color: "#94B8C7" },
+        { number: "3839", color: "#618DCC" },
+        { number: "3838", color: "#4680CF" },
+        { number: "800", color: "#9ECBE9" },
+        { number: "809", color: "#80B2F0" },
+        { number: "799", color: "#6C94D2" },
+        { number: "798", color: "#5871B7" },
+        { number: "797", color: "#4E6DC2" },
+        { number: "796", color: "#4B56AD" },
+        { number: "820", color: "#38478A" },
+        { number: "162", color: "#BBE8F3" },
+        { number: "827", color: "#9AC5CE" },
+        { number: "813", color: "#4C9EC8" },
+        { number: "826", color: "#2387C3" },
+        { number: "825", color: "#1D70A9" },
+        { number: "824", color: "#215680" },
+        { number: "996", color: "#1EC9CF" },
+        { number: "3843", color: "#1EB2BC" },
+        { number: "995", color: "#1E95A3" },
+        { number: "3846", color: "#00C4D2" },
+        { number: "3845", color: "#00B1C9" },
+        { number: "3844", color: "#0098AC" },
+        { number: "159", color: "#96B2CD" },
+        { number: "160", color: "#7891AD" },
+        { number: "161", color: "#617086" },
+        { number: "3756", color: "#E9F7F4" },
+        { number: "775", color: "#BEE2E8" },
+        { number: "3841", color: "#9CCCDF" },
+        { number: "3325", color: "#88B1CE" },
+        { number: "3755", color: "#6DA2C4" },
+        { number: "334", color: "#4B8CB6" },
+        { number: "322", color: "#346F99" },
+        { number: "312", color: "#2F6190" },
+        { number: "803", color: "#175BA8" },
+        { number: "336", color: "#344761" },
+        { number: "823", color: "#334156" },
+        { number: "939", color: "#353B46" },
+        { number: "3753", color: "#C3EBE8" },
+        { number: "3752", color: "#92B8C8" },
+        { number: "932", color: "#8299A9" },
+        { number: "931", color: "#64859A" },
+        { number: "930", color: "#516D7A" },
+        { number: "3750", color: "#415666" },
+        { number: "828", color: "#A7D8D5" },
+        { number: "3761", color: "#92D9EC" },
+        { number: "519", color: "#7CD0E6" },
+        { number: "518", color: "#55A7CA" },
+        { number: "3760", color: "#1D7FA5" },
+        { number: "517", color: "#216A98" },
+        { number: "3842", color: "#205B87" },
+        { number: "311", color: "#284A6A" },
+        { number: "747", color: "#CEDFDE" },
+        { number: "3766", color: "#58B7C1" },
+        { number: "807", color: "#1FA7B6" },
+        { number: "3765", color: "#1A6A84" },
+        { number: "3811", color: "#B3DAD6" },
+        { number: "598", color: "#88BAA2" },
+        { number: "597", color: "#69AAAF" },
+        { number: "3810", color: "#3A8D8E" },
+        { number: "3809", color: "#38837A" },
+        { number: "3808", color: "#26616B" },
+        { number: "928", color: "#B7D4C2" },
+        { number: "927", color: "#9CA9A2" },
+        { number: "926", color: "#788983" },
+        { number: "3768", color: "#587077" },
+        { number: "924", color: "#44585E" },
+        { number: "3849", color: "#269588" },
+        { number: "3848", color: "#37847B" },
+        { number: "3847", color: "#087461" },
+        { number: "964", color: "#9AE8BC" },
+        { number: "959", color: "#49B7A5" },
+        { number: "958", color: "#26AC9B" },
+        { number: "3812", color: "#00927F" },
+        { number: "3851", color: "#44B093" },
+        { number: "943", color: "#0E937A" },
+        { number: "3850", color: "#249873" },
+        { number: "993", color: "#72BBA0" },
+        { number: "992", color: "#4EA391" },
+        { number: "3814", color: "#289981" },
+        { number: "991", color: "#087362" },
+        { number: "966", color: "#A8DCAD" },
+        { number: "564", color: "#9ED0A9" },
+        { number: "563", color: "#7CAF93" },
+        { number: "562", color: "#699E7F" },
+        { number: "505", color: "#4E7958" },
+        { number: "3817", color: "#98AFA0" },
+        { number: "3816", color: "#5B947E" },
+        { number: "163", color: "#678F7D" },
+        { number: "3815", color: "#4E816B" },
+        { number: "561", color: "#2A5D4F" },
+        { number: "3813", color: "#A3BFA6" },
+        { number: "503", color: "#789E97" },
+        { number: "502", color: "#698475" },
+        { number: "501", color: "#45655C" },
+        { number: "500", color: "#384742" },
+        { number: "955", color: "#A5E2AD" },
+        { number: "13", color: "#A9D5A4" },
+        { number: "954", color: "#90CC95" },
+        { number: "913", color: "#63C98A" },
+        { number: "912", color: "#549468" },
+        { number: "911", color: "#009D5C" },
+        { number: "910", color: "#1F834C" },
+        { number: "909", color: "#337B4F" },
+        { number: "3818", color: "#1B6342" },
+        { number: "369", color: "#D7E9AB" },
+        { number: "368", color: "#92A879" },
+        { number: "320", color: "#768A6E" },
+        { number: "367", color: "#627F64" },
+        { number: "319", color: "#395243" },
+        { number: "890", color: "#374F43" },
+        { number: "164", color: "#A3C796" },
+        { number: "989", color: "#879860" },
+        { number: "988", color: "#728650" },
+        { number: "987", color: "#495F3E" },
+        { number: "986", color: "#4A6040" },
+        { number: "772", color: "#E9F8C0" },
+        { number: "3348", color: "#B7BE81" },
+        { number: "3347", color: "#78875F" },
+        { number: "3346", color: "#68744C" },
+        { number: "3345", color: "#48583F" },
+        { number: "895", color: "#445A47" },
+        { number: "14", color: "#98CB7D" },
+        { number: "15", color: "#7CBA5A" },
+        { number: "16", color: "#7AAE48" },
+        { number: "704", color: "#9DB331" },
+        { number: "703", color: "#68BD36" },
+        { number: "702", color: "#68A141" },
+        { number: "701", color: "#009651" },
+        { number: "700", color: "#318253" },
+        { number: "699", color: "#2C5F46" },
+        { number: "907", color: "#ADB53F" },
+        { number: "906", color: "#87AC36" },
+        { number: "905", color: "#5F8D44" },
+        { number: "904", color: "#56693E" },
+        { number: "472", color: "#D1C37E" },
+        { number: "471", color: "#9F9F66" },
+        { number: "470", color: "#869255" },
+        { number: "469", color: "#696D43" },
+        { number: "937", color: "#787642" },
+        { number: "936", color: "#5D674F" },
+        { number: "935", color: "#545648" },
+        { number: "934", color: "#494A40" },
+        { number: "3364", color: "#9DBF7A" },
+        { number: "3363", color: "#67955B" },
+        { number: "3362", color: "#5B844D" },
+        { number: "10", color: "#B6CCA7" },
+        { number: "11", color: "#9FA86F" },
+        { number: "12", color: "#99A15C" },
+        { number: "165", color: "#EED67F" },
+        { number: "3819", color: "#E8DB6D" },
+        { number: "166", color: "#C3B343" },
+        { number: "581", color: "#9B9C4C" },
+        { number: "580", color: "#7E7B44" },
+        { number: "523", color: "#A6B495" },
+        { number: "3053", color: "#9B9368" },
+        { number: "3052", color: "#8D926B" },
+        { number: "3051", color: "#666B43" },
+        { number: "524", color: "#B7BF97" },
+        { number: "522", color: "#888B80" },
+        { number: "520", color: "#506351" },
+        { number: "734", color: "#C8A95A" },
+        { number: "733", color: "#AA924D" },
+        { number: "732", color: "#7B7142" },
+        { number: "730", color: "#71643D" },
+        { number: "3013", color: "#B6A677" },
+        { number: "3012", color: "#978C63" },
+        { number: "3011", color: "#7E724C" },
+        { number: "372", color: "#B3A270" },
+        { number: "371", color: "#95865A" },
+        { number: "370", color: "#987E55" },
+        { number: "17", color: "#BCA265" },
+        { number: "18", color: "#A7884B" },
+        { number: "834", color: "#E1BA72" },
+        { number: "833", color: "#C49B5A" },
+        { number: "832", color: "#AE874F" },
+        { number: "831", color: "#96754E" },
+        { number: "830", color: "#877146" },
+        { number: "829", color: "#835E43" },
+        { number: "746", color: "#FCEFCD" },
+        { number: "677", color: "#FDDFB3" },
+        { number: "422", color: "#CB9F7A" },
+        { number: "3828", color: "#B0825B" },
+        { number: "420", color: "#9B7B60" },
+        { number: "869", color: "#815A3E" },
+        { number: "613", color: "#D9C8B2" },
+        { number: "612", color: "#C2A17D" },
+        { number: "611", color: "#866D54" },
+        { number: "610", color: "#938063" },
+        { number: "3047", color: "#FFE2A8" },
+        { number: "3046", color: "#DDBA81" },
+        { number: "3045", color: "#BB8B63" },
+        { number: "167", color: "#A87852" },
+        { number: "676", color: "#F5CC8E" },
+        { number: "729", color: "#C6996F" },
+        { number: "680", color: "#BD8446" },
+        { number: "3829", color: "#BD8049" },
+        { number: "3822", color: "#FFD671" },
+        { number: "3821", color: "#EEB758" },
+        { number: "3820", color: "#E2A44F" },
+        { number: "3852", color: "#F0A94D" },
+        { number: "728", color: "#FFB93A" },
+        { number: "783", color: "#DA8D3E" },
+        { number: "782", color: "#B2743D" },
+        { number: "780", color: "#9C6950" },
+        { number: "3823", color: "#FFF8C9" },
+        { number: "3855", color: "#FFD092" },
+        { number: "19", color: "#FFDC89" },
+        { number: "3854", color: "#FFA977" },
+        { number: "3853", color: "#DB8762" },
+        { number: "3827", color: "#FAB387" },
+        { number: "977", color: "#EF9E67" },
+        { number: "976", color: "#D87D46" },
+        { number: "3826", color: "#B66D49" },
+        { number: "975", color: "#885848" },
+        { number: "445", color: "#FADB7E" },
+        { number: "307", color: "#FCDB54" },
+        { number: "973", color: "#FFD63C" },
+        { number: "444", color: "#FFCF2A" },
+        { number: "3078", color: "#FFF591" },
+        { number: "727", color: "#FFE16E" },
+        { number: "726", color: "#FFD653" },
+        { number: "725", color: "#FFCB4B" },
+        { number: "972", color: "#FFB42C" },
+        { number: "745", color: "#FFEB87" },
+        { number: "744", color: "#FFD971" },
+        { number: "743", color: "#FFBC4B" },
+        { number: "742", color: "#FFAB49" },
+        { number: "741", color: "#FF9B2E" },
+        { number: "740", color: "#FF7F2E" },
+        { number: "970", color: "#F06B3F" },
+        { number: "947", color: "#E65F40" },
+        { number: "946", color: "#DC5541" },
+        { number: "900", color: "#CF4C42" },
+        { number: "967", color: "#FFC1AD" },
+        { number: "3824", color: "#FFAD9C" },
+        { number: "3341", color: "#FF9079" },
+        { number: "3340", color: "#FF795B" },
+        { number: "608", color: "#FF5D49" },
+        { number: "606", color: "#EE4643" },
+        { number: "951", color: "#FFE7D7" },
+        { number: "3856", color: "#F8B287" },
+        { number: "722", color: "#FF9457" },
+        { number: "721", color: "#E47243" },
+        { number: "720", color: "#E05D28" },
+        { number: "3825", color: "#F1AB8D" },
+        { number: "922", color: "#F67F4C" },
+        { number: "921", color: "#D07752" },
+        { number: "920", color: "#AB5A4A" },
+        { number: "919", color: "#A0463A" },
+        { number: "918", color: "#974C45" },
+        { number: "3770", color: "#FEE1C8" },
+        { number: "945", color: "#E4B8AA" },
+        { number: "402", color: "#E6906E" },
+        { number: "3776", color: "#CA704D" },
+        { number: "301", color: "#B66341" },
+        { number: "400", color: "#8E4C3D" },
+        { number: "300", color: "#79463D" },
+        { number: "225", color: "#F9C1BD" },
+        { number: "224", color: "#F0AEB2" },
+        { number: "152", color: "#EE9BA5" },
+        { number: "223", color: "#BB6B78" },
+        { number: "3722", color: "#AF616D" },
+        { number: "3721", color: "#9E4F5C" },
+        { number: "221", color: "#864047" },
+        { number: "948", color: "#FAD2BD" },
+        { number: "754", color: "#FFBEA4" },
+        { number: "3771", color: "#F0A893" },
+        { number: "758", color: "#EBA18E" },
+        { number: "3778", color: "#D47C72" },
+        { number: "356", color: "#AB5D58" },
+        { number: "3830", color: "#A95251" },
+        { number: "355", color: "#984445" },
+        { number: "3777", color: "#8B4143" },
+        { number: "3779", color: "#FFC6BB" },
+        { number: "3859", color: "#B6706B" },
+        { number: "3858", color: "#7F484C" },
+        { number: "3857", color: "#6F4244" },
+        { number: "20", color: "#F0DCC8" },
+        { number: "21", color: "#D2A08C" },
+        { number: "22", color: "#B46450" },
+        { number: "3774", color: "#F4D3C4" },
+        { number: "950", color: "#FFD4BE" },
+        { number: "3064", color: "#BB7F72" },
+        { number: "407", color: "#B7817B" },
+        { number: "3772", color: "#A46E66" },
+        { number: "632", color: "#915C56" },
+        { number: "453", color: "#C8BDBA" },
+        { number: "452", color: "#B4A3AC" },
+        { number: "451", color: "#7F6E73" },
+        { number: "3861", color: "#A08282" },
+        { number: "3860", color: "#876C6E" },
+        { number: "779", color: "#644C53" },
+        { number: "9", color: "#302A2A" },
+        { number: "712", color: "#FDECD8" },
+        { number: "739", color: "#EDD3BC" },
+        { number: "738", color: "#E9BA97" },
+        { number: "437", color: "#ECB58E" },
+        { number: "436", color: "#BF7C57" },
+        { number: "435", color: "#B37243" },
+        { number: "434", color: "#A46142" },
+        { number: "433", color: "#83573F" },
+        { number: "801", color: "#865A4C" },
+        { number: "898", color: "#6F554E" },
+        { number: "938", color: "#654842" },
+        { number: "3371", color: "#483C3E" },
+        { number: "543", color: "#EFD0C3" },
+        { number: "3864", color: "#C8AA8C" },
+        { number: "3863", color: "#947855" },
+        { number: "3862", color: "#6B4F2D" },
+        { number: "3031", color: "#231E1A" },
+        { number: "3865", color: "#F4F2EC" },
+        { number: "ECRU", color: "#FAFAE6" },
+        { number: "822", color: "#CDC9B7" },
+        { number: "644", color: "#AFAA87" },
+        { number: "642", color: "#898457" },
+        { number: "640", color: "#665E41" },
+        { number: "3787", color: "#5A4B30" },
+        { number: "3021", color: "#453A29" },
+        { number: "844", color: "#323232" },
+        { number: "3033", color: "#E6E6C8" },
+        { number: "3782", color: "#9D8F66" },
+        { number: "3032", color: "#85754B" },
+        { number: "3790", color: "#605338" },
+        { number: "3781", color: "#3B3120" },
+        { number: "5", color: "#979594" },
+        { number: "6", color: "#837E7B" },
+        { number: "7", color: "#7B746A" },
+        { number: "8", color: "#564F46" },
+        { number: "3866", color: "#D4D8BE" },
+        { number: "842", color: "#B4A382" },
+        { number: "841", color: "#907347" },
+        { number: "840", color: "#6A522A" },
+        { number: "839", color: "#332214" },
+        { number: "838", color: "#221A14" },
+        { number: "3072", color: "#D7F2BC" },
+        { number: "647", color: "#CCD48E" },
+        { number: "3023", color: "#C3C67D" },
+        { number: "3022", color: "#ACB46E" },
+        { number: "3024", color: "#DCE6D2" },
+        { number: "648", color: "#B4C8B4" },
+        { number: "646", color: "#A5B9A5" },
+        { number: "645", color: "#96AA96" },
+        { number: "B5200", color: "#F2F8FF" },
+        { number: "BLANC", color: "#FCFCFC" },
+        { number: "762", color: "#C7C8DC" },
+        { number: "415", color: "#B2B4C8" },
+        { number: "318", color: "#939AB4" },
+        { number: "414", color: "#777D96" },
+        { number: "1", color: "#B4B4B4" },
+        { number: "2", color: "#A0A0A0" },
+        { number: "3", color: "#8C8C8C" },
+        { number: "4", color: "#787878" },
+        { number: "535", color: "#636060" },
+        { number: "168", color: "#C7D1BF" },
+        { number: "169", color: "#8B9494" },
+        { number: "317", color: "#777B7F" },
+        { number: "413", color: "#5F6970" },
+        { number: "3799", color: "#484E52" },
+        { number: "310", color: "#000000" },
+      ];
+
+      const threadGrid = document.getElementById("threadGrid");
+
+      function getCategory(hex) {
+        const r = parseInt(hex.slice(1, 3), 16) / 255;
+        const g = parseInt(hex.slice(3, 5), 16) / 255;
+        const b = parseInt(hex.slice(5, 7), 16) / 255;
+        
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const delta = max - min;
+        
+        let h = 0;
+        if (delta === 0) {
+          h = 0;
+        } else if (max === r) {
+          h = ((g - b) / delta) % 6;
+        } else if (max === g) {
+          h = (b - r) / delta + 2;
+        } else {
+          h = (r - g) / delta + 4;
+        }
+        h = Math.round(h * 60);
+        if (h < 0) h += 360;
+        
+        const l = (max + min) / 2;
+        const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+        
+        // 無彩色（彩度が低い）
+        if (s < 0.1) return "mono";
+        
+        // Hue による色分類
+        if (h < 30 || h >= 330) return "red";
+        if (h >= 30 && h < 60) return "yellow";
+        if (h >= 60 && h < 150) return "green";
+        if (h >= 150 && h < 210) return "blue";
+        if (h >= 210 && h < 330) return "purple";
+        
+        return "";
+      }
+
+      function renderThreads() {
+        threadGrid.innerHTML = "";
+        const searchValue = document.getElementById("searchInput").value.toLowerCase();
+        const selectedCategory = document.getElementById("categoryFilter").value;
+        const showOwnedOnly = document.getElementById("ownedOnly").checked;
+        
+        threads.forEach(thread => {
+          const saved = localStorage.getItem(`dmc_${thread.number}`) === "true";
+          
+          const numberMatch = thread.number.toLowerCase().includes(searchValue);
+          const categoryMatch = !selectedCategory || getCategory(thread.color) === selectedCategory;
+          const ownedMatch = !showOwnedOnly || saved;
+          
+          if (numberMatch && categoryMatch && ownedMatch) {
+            const card = document.createElement("div");
+            card.className = "thread-card";
+            
+            card.innerHTML = `
+            <div class="top-row">
+              <div class="thread-number">番号: ${thread.number}</div>
+              <div class="thread-code">${thread.color}</div>
+              <label>
+                <input type="checkbox" ${saved ? "checked" : ""}>
+                持ってる
+                </label>
+                </div>
+                <div class="color-box" style="background-color: ${thread.color};"></div>
+                `;
+                
+                const checkbox = card.querySelector("input");
+                checkbox.addEventListener("change", () => {
+                  localStorage.setItem(`dmc_${thread.number}`, checkbox.checked);
+                  renderThreads(); // ←チェック後の再描画もOK
+                });
+                
+                threadGrid.appendChild(card);
+              }
+            });
+          }
+          
+          document.getElementById("ownedOnly").addEventListener("change", renderThreads);
+          
+          document.getElementById("searchInput").addEventListener("input", renderThreads);
+          document.getElementById("categoryFilter").addEventListener("change", renderThreads);
+          
+          renderThreads();
+    </script>
   </div>
-  <label style="display: block; max-width: 400px; margin: 0 auto 1rem; font-size: 1rem;">
-    <input type="checkbox" id="ownedOnly" />
-    持ってる糸だけ表示
-  </label>
-  <div class="thread-grid" id="threadGrid"></div>
-
-  <script>
-const threads = [
-  { number: "3713", color: "#FDCCC6" },
-  { number: "761", color: "#FDBBAA" },
-  { number: "760", color: "#FD9B9D" },
-  { number: "3712", color: "#D7595E" },
-  { number: "3328", color: "#CD474B" },
-  { number: "347", color: "#B63A3C" },
-  { number: "353", color: "#FFBCB1" },
-  { number: "352", color: "#FF9396" },
-  { number: "351", color: "#F3626C" },
-  { number: "350", color: "#ED4D50" },
-  { number: "349", color: "#D04448" },
-  { number: "817", color: "#BE3943" },
-  { number: "304", color: "#AB344F" },
-  { number: "3833", color: "#E96177" },
-  { number: "3832", color: "#C9596D" },
-  { number: "3831", color: "#B7455D" },
-  { number: "777", color: "#96354D" },
-  { number: "3801", color: "#DC4142" },
-  { number: "666", color: "#D7353E" },
-  { number: "321", color: "#AC414D" },
-  { number: "498", color: "#843943" },
-  { number: "816", color: "#983B43" },
-  { number: "815", color: "#904850" },
-  { number: "814", color: "#6B333D" },
-  { number: "894", color: "#FFB1C9" },
-  { number: "893", color: "#FF7996" },
-  { number: "892", color: "#F15260" },
-  { number: "891", color: "#DA5564" },
-  { number: "818", color: "#FFE0E7" },
-  { number: "957", color: "#FFA9A7" },
-  { number: "956", color: "#FF8390" },
-  { number: "3708", color: "#FFA4A2" },
-  { number: "3706", color: "#FF6F7A" },
-  { number: "3705", color: "#FF4D5D" },
-  { number: "963", color: "#FFD0E3" },
-  { number: "3716", color: "#FFB1BC" },
-  { number: "962", color: "#FF8CAB" },
-  { number: "961", color: "#EB557E" },
-  { number: "309", color: "#A93E52" },
-  { number: "819", color: "#FBDEDE" },
-  { number: "3326", color: "#F4A6A5" },
-  { number: "899", color: "#E8768E" },
-  { number: "335", color: "#DD5E7B" },
-  { number: "326", color: "#A83C53" },
-  { number: "151", color: "#FEC3D4" },
-  { number: "3354", color: "#F19CAF" },
-  { number: "3733", color: "#D87A84" },
-  { number: "3731", color: "#D37691" },
-  { number: "3350", color: "#B3536A" },
-  { number: "150", color: "#A8405D" },
-  { number: "23", color: "#F8E2E0" },
-  { number: "3689", color: "#FECBD1" },
-  { number: "3688", color: "#C7879C" },
-  { number: "3687", color: "#B45F78" },
-  { number: "3803", color: "#934864" },
-  { number: "3685", color: "#864157" },
-  { number: "605", color: "#FFBDCF" },
-  { number: "604", color: "#EF92A3" },
-  { number: "603", color: "#E278A3" },
-  { number: "602", color: "#DA618F" },
-  { number: "601", color: "#D45281" },
-  { number: "600", color: "#C43D6B" },
-  { number: "3806", color: "#F18CB3" },
-  { number: "3805", color: "#DD6088" },
-  { number: "3804", color: "#C74E74" },
-  { number: "3609", color: "#E5A1C2" },
-  { number: "3608", color: "#EA94B3" },
-  { number: "3607", color: "#CF75B4" },
-  { number: "718", color: "#A04472" },
-  { number: "917", color: "#AD4C8B" },
-  { number: "915", color: "#8D4271" },
-  { number: "33", color: "#7F4D6F" },
-  { number: "34", color: "#6B324E" },
-  { number: "35", color: "#512439" },
-  { number: "778", color: "#D5ACB7" },
-  { number: "3727", color: "#D7A3B7" },
-  { number: "316", color: "#CD8BA8" },
-  { number: "3726", color: "#8E5B6A" },
-  { number: "315", color: "#8B525D" },
-  { number: "3802", color: "#8B4C57" },
-  { number: "902", color: "#683B4F" },
-  { number: "3836", color: "#B386A2" },
-  { number: "3835", color: "#8E6787" },
-  { number: "3834", color: "#7D5173" },
-  { number: "154", color: "#4D364B" },
-  { number: "24", color: "#E5D7DE" },
-  { number: "25", color: "#D9CBDA" },
-  { number: "26", color: "#C9C3D8" },
-  { number: "211", color: "#C8BADD" },
-  { number: "210", color: "#BCA4D2" },
-  { number: "209", color: "#A085B6" },
-  { number: "208", color: "#866AA8" },
-  { number: "3837", color: "#765B98" },
-  { number: "327", color: "#775183" },
-  { number: "153", color: "#DABBDA" },
-  { number: "554", color: "#D0ABDC" },
-  { number: "553", color: "#B78FBD" },
-  { number: "552", color: "#976FB2" },
-  { number: "550", color: "#834B92" },
-  { number: "3743", color: "#BCAAB6" },
-  { number: "3042", color: "#9E91A5" },
-  { number: "3041", color: "#836F89" },
-  { number: "3740", color: "#665362" },
-  { number: "27", color: "#DBD1D2" },
-  { number: "28", color: "#796A77" },
-  { number: "29", color: "#453642" },
-  { number: "3747", color: "#B9C7DB" },
-  { number: "341", color: "#A1B7C9" },
-  { number: "156", color: "#708DB9" },
-  { number: "340", color: "#A388BA" },
-  { number: "155", color: "#9B81C2" },
-  { number: "3746", color: "#8F73B2" },
-  { number: "333", color: "#8562B5" },
-  { number: "30", color: "#7A6F89" },
-  { number: "31", color: "#615773" },
-  { number: "32", color: "#4D455E" },
-  { number: "157", color: "#98BCBF" },
-  { number: "794", color: "#7EA3C6" },
-  { number: "793", color: "#6E8AAE" },
-  { number: "3807", color: "#597AA1" },
-  { number: "792", color: "#455688" },
-  { number: "158", color: "#546589" },
-  { number: "791", color: "#3E4971" },
-  { number: "3840", color: "#94B8C7" },
-  { number: "3839", color: "#618DCC" },
-  { number: "3838", color: "#4680CF" },
-  { number: "800", color: "#9ECBE9" },
-  { number: "809", color: "#80B2F0" },
-  { number: "799", color: "#6C94D2" },
-  { number: "798", color: "#5871B7" },
-  { number: "797", color: "#4E6DC2" },
-  { number: "796", color: "#4B56AD" },
-  { number: "820", color: "#38478A" },
-  { number: "162", color: "#BBE8F3" },
-  { number: "827", color: "#9AC5CE" },
-  { number: "813", color: "#4C9EC8" },
-  { number: "826", color: "#2387C3" },
-  { number: "825", color: "#1D70A9" },
-  { number: "824", color: "#215680" },
-  { number: "996", color: "#1EC9CF" },
-  { number: "3843", color: "#1EB2BC" },
-  { number: "995", color: "#1E95A3" },
-  { number: "3846", color: "#00C4D2" },
-  { number: "3845", color: "#00B1C9" },
-  { number: "3844", color: "#0098AC" },
-  { number: "159", color: "#96B2CD" },
-  { number: "160", color: "#7891AD" },
-  { number: "161", color: "#617086" },
-  { number: "3756", color: "#E9F7F4" },
-  { number: "775", color: "#BEE2E8" },
-  { number: "3841", color: "#9CCCDF" },
-  { number: "3325", color: "#88B1CE" },
-  { number: "3755", color: "#6DA2C4" },
-  { number: "334", color: "#4B8CB6" },
-  { number: "322", color: "#346F99" },
-  { number: "312", color: "#2F6190" },
-  { number: "803", color: "#175BA8" },
-  { number: "336", color: "#344761" },
-  { number: "823", color: "#334156" },
-  { number: "939", color: "#353B46" },
-  { number: "3753", color: "#C3EBE8" },
-  { number: "3752", color: "#92B8C8" },
-  { number: "932", color: "#8299A9" },
-  { number: "931", color: "#64859A" },
-  { number: "930", color: "#516D7A" },
-  { number: "3750", color: "#415666" },
-  { number: "828", color: "#A7D8D5" },
-  { number: "3761", color: "#92D9EC" },
-  { number: "519", color: "#7CD0E6" },
-  { number: "518", color: "#55A7CA" },
-  { number: "3760", color: "#1D7FA5" },
-  { number: "517", color: "#216A98" },
-  { number: "3842", color: "#205B87" },
-  { number: "311", color: "#284A6A" },
-  { number: "747", color: "#CEDFDE" },
-  { number: "3766", color: "#58B7C1" },
-  { number: "807", color: "#1FA7B6" },
-  { number: "3765", color: "#1A6A84" },
-  { number: "3811", color: "#B3DAD6" },
-  { number: "598", color: "#88BAA2" },
-  { number: "597", color: "#69AAAF" },
-  { number: "3810", color: "#3A8D8E" },
-  { number: "3809", color: "#38837A" },
-  { number: "3808", color: "#26616B" },
-  { number: "928", color: "#B7D4C2" },
-  { number: "927", color: "#9CA9A2" },
-  { number: "926", color: "#788983" },
-  { number: "3768", color: "#587077" },
-  { number: "924", color: "#44585E" },
-  { number: "3849", color: "#269588" },
-  { number: "3848", color: "#37847B" },
-  { number: "3847", color: "#087461" },
-  { number: "964", color: "#9AE8BC" },
-  { number: "959", color: "#49B7A5" },
-  { number: "958", color: "#26AC9B" },
-  { number: "3812", color: "#00927F" },
-  { number: "3851", color: "#44B093" },
-  { number: "943", color: "#0E937A" },
-  { number: "3850", color: "#249873" },
-  { number: "993", color: "#72BBA0" },
-  { number: "992", color: "#4EA391" },
-  { number: "3814", color: "#289981" },
-  { number: "991", color: "#087362" },
-  { number: "966", color: "#A8DCAD" },
-  { number: "564", color: "#9ED0A9" },
-  { number: "563", color: "#7CAF93" },
-  { number: "562", color: "#699E7F" },
-  { number: "505", color: "#4E7958" },
-  { number: "3817", color: "#98AFA0" },
-  { number: "3816", color: "#5B947E" },
-  { number: "163", color: "#678F7D" },
-  { number: "3815", color: "#4E816B" },
-  { number: "561", color: "#2A5D4F" },
-  { number: "3813", color: "#A3BFA6" },
-  { number: "503", color: "#789E97" },
-  { number: "502", color: "#698475" },
-  { number: "501", color: "#45655C" },
-  { number: "500", color: "#384742" },
-  { number: "955", color: "#A5E2AD" },
-  { number: "13", color: "#A9D5A4" },
-  { number: "954", color: "#90CC95" },
-  { number: "913", color: "#63C98A" },
-  { number: "912", color: "#549468" },
-  { number: "911", color: "#009D5C" },
-  { number: "910", color: "#1F834C" },
-  { number: "909", color: "#337B4F" },
-  { number: "3818", color: "#1B6342" },
-  { number: "369", color: "#D7E9AB" },
-  { number: "368", color: "#92A879" },
-  { number: "320", color: "#768A6E" },
-  { number: "367", color: "#627F64" },
-  { number: "319", color: "#395243" },
-  { number: "890", color: "#374F43" },
-  { number: "164", color: "#A3C796" },
-  { number: "989", color: "#879860" },
-  { number: "988", color: "#728650" },
-  { number: "987", color: "#495F3E" },
-  { number: "986", color: "#4A6040" },
-  { number: "772", color: "#E9F8C0" },
-  { number: "3348", color: "#B7BE81" },
-  { number: "3347", color: "#78875F" },
-  { number: "3346", color: "#68744C" },
-  { number: "3345", color: "#48583F" },
-  { number: "895", color: "#445A47" },
-  { number: "14", color: "#98CB7D" },
-  { number: "15", color: "#7CBA5A" },
-  { number: "16", color: "#7AAE48" },
-  { number: "704", color: "#9DB331" },
-  { number: "703", color: "#68BD36" },
-  { number: "702", color: "#68A141" },
-  { number: "701", color: "#009651" },
-  { number: "700", color: "#318253" },
-  { number: "699", color: "#2C5F46" },
-  { number: "907", color: "#ADB53F" },
-  { number: "906", color: "#87AC36" },
-  { number: "905", color: "#5F8D44" },
-  { number: "904", color: "#56693E" },
-  { number: "472", color: "#D1C37E" },
-  { number: "471", color: "#9F9F66" },
-  { number: "470", color: "#869255" },
-  { number: "469", color: "#696D43" },
-  { number: "937", color: "#787642" },
-  { number: "936", color: "#5D674F" },
-  { number: "935", color: "#545648" },
-  { number: "934", color: "#494A40" },
-  { number: "3364", color: "#9DBF7A" },
-  { number: "3363", color: "#67955B" },
-  { number: "3362", color: "#5B844D" },
-  { number: "10", color: "#B6CCA7" },
-  { number: "11", color: "#9FA86F" },
-  { number: "12", color: "#99A15C" },
-  { number: "165", color: "#EED67F" },
-  { number: "3819", color: "#E8DB6D" },
-  { number: "166", color: "#C3B343" },
-  { number: "581", color: "#9B9C4C" },
-  { number: "580", color: "#7E7B44" },
-  { number: "523", color: "#A6B495" },
-  { number: "3053", color: "#9B9368" },
-  { number: "3052", color: "#8D926B" },
-  { number: "3051", color: "#666B43" },
-  { number: "524", color: "#B7BF97" },
-  { number: "522", color: "#888B80" },
-  { number: "520", color: "#506351" },
-  { number: "734", color: "#C8A95A" },
-  { number: "733", color: "#AA924D" },
-  { number: "732", color: "#7B7142" },
-  { number: "730", color: "#71643D" },
-  { number: "3013", color: "#B6A677" },
-  { number: "3012", color: "#978C63" },
-  { number: "3011", color: "#7E724C" },
-  { number: "372", color: "#B3A270" },
-  { number: "371", color: "#95865A" },
-  { number: "370", color: "#987E55" },
-  { number: "17", color: "#BCA265" },
-  { number: "18", color: "#A7884B" },
-  { number: "834", color: "#E1BA72" },
-  { number: "833", color: "#C49B5A" },
-  { number: "832", color: "#AE874F" },
-  { number: "831", color: "#96754E" },
-  { number: "830", color: "#877146" },
-  { number: "829", color: "#835E43" },
-  { number: "746", color: "#FCEFCD" },
-  { number: "677", color: "#FDDFB3" },
-  { number: "422", color: "#CB9F7A" },
-  { number: "3828", color: "#B0825B" },
-  { number: "420", color: "#9B7B60" },
-  { number: "869", color: "#815A3E" },
-  { number: "613", color: "#D9C8B2" },
-  { number: "612", color: "#C2A17D" },
-  { number: "611", color: "#866D54" },
-  { number: "610", color: "#938063" },
-  { number: "3047", color: "#FFE2A8" },
-  { number: "3046", color: "#DDBA81" },
-  { number: "3045", color: "#BB8B63" },
-  { number: "167", color: "#A87852" },
-  { number: "676", color: "#F5CC8E" },
-  { number: "729", color: "#C6996F" },
-  { number: "680", color: "#BD8446" },
-  { number: "3829", color: "#BD8049" },
-  { number: "3822", color: "#FFD671" },
-  { number: "3821", color: "#EEB758" },
-  { number: "3820", color: "#E2A44F" },
-  { number: "3852", color: "#F0A94D" },
-  { number: "728", color: "#FFB93A" },
-  { number: "783", color: "#DA8D3E" },
-  { number: "782", color: "#B2743D" },
-  { number: "780", color: "#9C6950" },
-  { number: "3823", color: "#FFF8C9" },
-  { number: "3855", color: "#FFD092" },
-  { number: "19", color: "#FFDC89" },
-  { number: "3854", color: "#FFA977" },
-  { number: "3853", color: "#DB8762" },
-  { number: "3827", color: "#FAB387" },
-  { number: "977", color: "#EF9E67" },
-  { number: "976", color: "#D87D46" },
-  { number: "3826", color: "#B66D49" },
-  { number: "975", color: "#885848" },
-  { number: "445", color: "#FADB7E" },
-  { number: "307", color: "#FCDB54" },
-  { number: "973", color: "#FFD63C" },
-  { number: "444", color: "#FFCF2A" },
-  { number: "3078", color: "#FFF591" },
-  { number: "727", color: "#FFE16E" },
-  { number: "726", color: "#FFD653" },
-  { number: "725", color: "#FFCB4B" },
-  { number: "972", color: "#FFB42C" },
-  { number: "745", color: "#FFEB87" },
-  { number: "744", color: "#FFD971" },
-  { number: "743", color: "#FFBC4B" },
-  { number: "742", color: "#FFAB49" },
-  { number: "741", color: "#FF9B2E" },
-  { number: "740", color: "#FF7F2E" },
-  { number: "970", color: "#F06B3F" },
-  { number: "947", color: "#E65F40" },
-  { number: "946", color: "#DC5541" },
-  { number: "900", color: "#CF4C42" },
-  { number: "967", color: "#FFC1AD" },
-  { number: "3824", color: "#FFAD9C" },
-  { number: "3341", color: "#FF9079" },
-  { number: "3340", color: "#FF795B" },
-  { number: "608", color: "#FF5D49" },
-  { number: "606", color: "#EE4643" },
-  { number: "951", color: "#FFE7D7" },
-  { number: "3856", color: "#F8B287" },
-  { number: "722", color: "#FF9457" },
-  { number: "721", color: "#E47243" },
-  { number: "720", color: "#E05D28" },
-  { number: "3825", color: "#F1AB8D" },
-  { number: "922", color: "#F67F4C" },
-  { number: "921", color: "#D07752" },
-  { number: "920", color: "#AB5A4A" },
-  { number: "919", color: "#A0463A" },
-  { number: "918", color: "#974C45" },
-  { number: "3770", color: "#FEE1C8" },
-  { number: "945", color: "#E4B8AA" },
-  { number: "402", color: "#E6906E" },
-  { number: "3776", color: "#CA704D" },
-  { number: "301", color: "#B66341" },
-  { number: "400", color: "#8E4C3D" },
-  { number: "300", color: "#79463D" },
-  { number: "225", color: "#F9C1BD" },
-  { number: "224", color: "#F0AEB2" },
-  { number: "152", color: "#EE9BA5" },
-  { number: "223", color: "#BB6B78" },
-  { number: "3722", color: "#AF616D" },
-  { number: "3721", color: "#9E4F5C" },
-  { number: "221", color: "#864047" },
-  { number: "948", color: "#FAD2BD" },
-  { number: "754", color: "#FFBEA4" },
-  { number: "3771", color: "#F0A893" },
-  { number: "758", color: "#EBA18E" },
-  { number: "3778", color: "#D47C72" },
-  { number: "356", color: "#AB5D58" },
-  { number: "3830", color: "#A95251" },
-  { number: "355", color: "#984445" },
-  { number: "3777", color: "#8B4143" },
-  { number: "3779", color: "#FFC6BB" },
-  { number: "3859", color: "#B6706B" },
-  { number: "3858", color: "#7F484C" },
-  { number: "3857", color: "#6F4244" },
-  { number: "20", color: "#F0DCC8" },
-  { number: "21", color: "#D2A08C" },
-  { number: "22", color: "#B46450" },
-  { number: "3774", color: "#F4D3C4" },
-  { number: "950", color: "#FFD4BE" },
-  { number: "3064", color: "#BB7F72" },
-  { number: "407", color: "#B7817B" },
-  { number: "3772", color: "#A46E66" },
-  { number: "632", color: "#915C56" },
-  { number: "453", color: "#C8BDBA" },
-  { number: "452", color: "#B4A3AC" },
-  { number: "451", color: "#7F6E73" },
-  { number: "3861", color: "#A08282" },
-  { number: "3860", color: "#876C6E" },
-  { number: "779", color: "#644C53" },
-  { number: "9", color: "#302A2A" },
-  { number: "712", color: "#FDECD8" },
-  { number: "739", color: "#EDD3BC" },
-  { number: "738", color: "#E9BA97" },
-  { number: "437", color: "#ECB58E" },
-  { number: "436", color: "#BF7C57" },
-  { number: "435", color: "#B37243" },
-  { number: "434", color: "#A46142" },
-  { number: "433", color: "#83573F" },
-  { number: "801", color: "#865A4C" },
-  { number: "898", color: "#6F554E" },
-  { number: "938", color: "#654842" },
-  { number: "3371", color: "#483C3E" },
-  { number: "543", color: "#EFD0C3" },
-  { number: "3864", color: "#C8AA8C" },
-  { number: "3863", color: "#947855" },
-  { number: "3862", color: "#6B4F2D" },
-  { number: "3031", color: "#231E1A" },
-  { number: "3865", color: "#F4F2EC" },
-  { number: "ECRU", color: "#FAFAE6" },
-  { number: "822", color: "#CDC9B7" },
-  { number: "644", color: "#AFAA87" },
-  { number: "642", color: "#898457" },
-  { number: "640", color: "#665E41" },
-  { number: "3787", color: "#5A4B30" },
-  { number: "3021", color: "#453A29" },
-  { number: "844", color: "#323232" },
-  { number: "3033", color: "#E6E6C8" },
-  { number: "3782", color: "#9D8F66" },
-  { number: "3032", color: "#85754B" },
-  { number: "3790", color: "#605338" },
-  { number: "3781", color: "#3B3120" },
-  { number: "5", color: "#979594" },
-  { number: "6", color: "#837E7B" },
-  { number: "7", color: "#7B746A" },
-  { number: "8", color: "#564F46" },
-  { number: "3866", color: "#D4D8BE" },
-  { number: "842", color: "#B4A382" },
-  { number: "841", color: "#907347" },
-  { number: "840", color: "#6A522A" },
-  { number: "839", color: "#332214" },
-  { number: "838", color: "#221A14" },
-  { number: "3072", color: "#D7F2BC" },
-  { number: "647", color: "#CCD48E" },
-  { number: "3023", color: "#C3C67D" },
-  { number: "3022", color: "#ACB46E" },
-  { number: "3024", color: "#DCE6D2" },
-  { number: "648", color: "#B4C8B4" },
-  { number: "646", color: "#A5B9A5" },
-  { number: "645", color: "#96AA96" },
-  { number: "B5200", color: "#F2F8FF" },
-  { number: "BLANC", color: "#FCFCFC" },
-  { number: "762", color: "#C7C8DC" },
-  { number: "415", color: "#B2B4C8" },
-  { number: "318", color: "#939AB4" },
-  { number: "414", color: "#777D96" },
-  { number: "1", color: "#B4B4B4" },
-  { number: "2", color: "#A0A0A0" },
-  { number: "3", color: "#8C8C8C" },
-  { number: "4", color: "#787878" },
-  { number: "535", color: "#636060" },
-  { number: "168", color: "#C7D1BF" },
-  { number: "169", color: "#8B9494" },
-  { number: "317", color: "#777B7F" },
-  { number: "413", color: "#5F6970" },
-  { number: "3799", color: "#484E52" },
-  { number: "310", color: "#000000" },
-];
-
-    const threadGrid = document.getElementById("threadGrid");
-
-    function getCategory(hex) {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const delta = max - min;
-
-  let h = 0;
-  if (delta === 0) {
-    h = 0;
-  } else if (max === r) {
-    h = ((g - b) / delta) % 6;
-  } else if (max === g) {
-    h = (b - r) / delta + 2;
-  } else {
-    h = (r - g) / delta + 4;
-  }
-  h = Math.round(h * 60);
-  if (h < 0) h += 360;
-
-  const l = (max + min) / 2;
-  const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-
-  // 無彩色（彩度が低い）
-  if (s < 0.1) return "mono";
-
-  // Hue による色分類
-  if (h < 30 || h >= 330) return "red";
-  if (h >= 30 && h < 60) return "yellow";
-  if (h >= 60 && h < 150) return "green";
-  if (h >= 150 && h < 210) return "blue";
-  if (h >= 210 && h < 270) return "purple";
-  if (h >= 270 && h < 330) return "brown"; // 茶系はやや特殊だけどこの辺でざっくり
-
-  return "";
-}
-
-    function renderThreads() {
-  threadGrid.innerHTML = "";
-  const searchValue = document.getElementById("searchInput").value.toLowerCase();
-  const selectedCategory = document.getElementById("categoryFilter").value;
-  const showOwnedOnly = document.getElementById("ownedOnly").checked;
-
-  threads.forEach(thread => {
-    const saved = localStorage.getItem(`dmc_${thread.number}`) === "true";
-
-    const numberMatch = thread.number.toLowerCase().includes(searchValue);
-    const categoryMatch = !selectedCategory || getCategory(thread.color) === selectedCategory;
-    const ownedMatch = !showOwnedOnly || saved;
-
-    if (numberMatch && categoryMatch && ownedMatch) {
-      const card = document.createElement("div");
-      card.className = "thread-card";
-
-      card.innerHTML = `
-        <div class="top-row">
-          <div class="thread-number">番号: ${thread.number}</div>
-          <div class="thread-code">${thread.color}</div>
-          <label>
-            <input type="checkbox" ${saved ? "checked" : ""}>
-            持ってる
-          </label>
-        </div>
-        <div class="color-box" style="background-color: ${thread.color};"></div>
-      `;
-
-      const checkbox = card.querySelector("input");
-      checkbox.addEventListener("change", () => {
-        localStorage.setItem(`dmc_${thread.number}`, checkbox.checked);
-        renderThreads(); // ←チェック後の再描画もOK
-      });
-
-      threadGrid.appendChild(card);
-    }
-  });
-}
-
-document.getElementById("ownedOnly").addEventListener("change", renderThreads);
-
-    document.getElementById("searchInput").addEventListener("input", renderThreads);
-    document.getElementById("categoryFilter").addEventListener("change", renderThreads);
-
-    renderThreads();
-  </script>
 </body>
 </html>
